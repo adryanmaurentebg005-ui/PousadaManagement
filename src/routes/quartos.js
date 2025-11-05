@@ -4,7 +4,6 @@ import Quarto from '../models/Quarto.js';
 
 const router = express.Router();
 
-// Listar quartos
 router.get('/', async (req, res, next) => {
   try {
     const { tipo } = req.query;
@@ -23,7 +22,6 @@ router.get('/', async (req, res, next) => {
   }
 });
 
-// Ver detalhes do quarto
 router.get('/:id', async (req, res, next) => {
   try {
     const quarto = await Quarto.findById(req.params.id).lean();

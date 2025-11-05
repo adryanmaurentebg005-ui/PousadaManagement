@@ -3,7 +3,6 @@ import { Hospede, Quarto, Reserva, Pagamento } from '../models/index.js';
 
 const router = express.Router();
 
-// Middleware de autenticação admin
 function requireAdmin(req, res, next) {
   if (!req.session.user || req.session.user.tipo !== 'admin') {
     return res.redirect('/');
@@ -11,7 +10,7 @@ function requireAdmin(req, res, next) {
   next();
 }
 
-// Dashboard
+// === DASHBOARD ADMIN ===
 router.get('/', requireAdmin, async (req, res, next) => {
   try {
     const [hospedesCount, quartosCount, reservasCount, quartosDisponiveis, reservasPendentes, pagamentos] = await Promise.all([

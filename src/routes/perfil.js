@@ -3,7 +3,6 @@ import { Hospede, Quarto, Reserva, Pagamento } from '../models/index.js';
 
 const router = express.Router();
 
-// Middleware de autenticação
 function requireAuth(req, res, next) {
   if (!req.session.user) {
     return res.redirect('/auth/login');
@@ -11,7 +10,6 @@ function requireAuth(req, res, next) {
   next();
 }
 
-// Página de login
 router.get('/login', (req, res) => {
   if (req.session.user) {
     return res.redirect('/');
@@ -23,14 +21,11 @@ router.get('/login', (req, res) => {
   });
 });
 
-// Página do perfil
-
 router.get('/', requireAuth, async (req, res) => {
   const user = req.session.user;
   const { email } = user;
 
   try {
-    // 1️⃣ Buscar hóspede pelo e-mail
     const hospede = await Hospede.findOne({ email }).lean();
     if (!hospede) {
       return res.render('perfil/index', {
@@ -50,9 +45,6 @@ router.get('/', requireAuth, async (req, res) => {
   .sort({ criadoEm: -1 })
   .lean();
 
-
-    // 3️⃣ Renderizar a view com os dados
- 
     res.render('perfil/index', {
       title: 'Meu Perfil',
       page: 'perfil',
@@ -68,7 +60,6 @@ router.get('/', requireAuth, async (req, res) => {
   }
 });
 
-// Página de configurações
 router.get('/configuracoes', requireAuth, (req, res) => {
   res.render('perfil/configuracoes', {
     title: 'Configurações',
@@ -78,7 +69,6 @@ router.get('/configuracoes', requireAuth, (req, res) => {
   });
 });
 
-// Atualizar perfil
 router.post('/atualizar', requireAuth, async (req, res) => {
   const { nome, telefone, endereco, dataNascimento } = req.body;
   const user = req.session.user;
@@ -96,7 +86,6 @@ router.post('/atualizar', requireAuth, async (req, res) => {
   }
 });
 
-// Mudar senha
 router.post('/mudar-senha', requireAuth, (req, res) => {
   const { senhaAtual, novaSenha, confirmarSenha } = req.body;
   const user = req.session.user;

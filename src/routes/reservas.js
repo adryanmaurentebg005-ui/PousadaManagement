@@ -3,7 +3,6 @@ import { Hospede, Quarto, Reserva, Pagamento } from '../models/index.js';
 
 const router = express.Router();
 
-// Middleware de autenticação
 function requireAuth(req, res, next) {
   if (!req.session.user) {
     return res.redirect('/auth/login');
@@ -11,7 +10,6 @@ function requireAuth(req, res, next) {
   next();
 }
 
-// Página de fazer reserva
 router.get('/nova/:quartoId', requireAuth, async (req, res, next) => {
   try {
     const quarto = await Quarto.findById(req.params.quartoId).lean();
@@ -28,7 +26,6 @@ router.get('/nova/:quartoId', requireAuth, async (req, res, next) => {
   }
 }); 
 
-// Processar reserva
 router.post('/nova/:quartoId', requireAuth, async (req, res, next) => {
   try {
     const { dataCheckIn, dataCheckOut, numeroHospedes, metodoPagamento, nome, CPF, telefone, endereco } = req.body;
@@ -37,7 +34,6 @@ router.post('/nova/:quartoId', requireAuth, async (req, res, next) => {
     const quarto = await Quarto.findById(quartoId);
     if (!quarto || quarto.status !== 'Disponível') return res.redirect('/quartos');
 
-    // Validações
     if (new Date(dataCheckIn) >= new Date(dataCheckOut)) {
       return res.render('reservas/nova', {
         title: 'Fazer Reserva',
@@ -56,7 +52,6 @@ router.post('/nova/:quartoId', requireAuth, async (req, res, next) => {
       });
     }
 
-    // Criar ou recuperar hóspede
     let hospede = await Hospede.findOne({ email: req.session.user.email });
     if (!hospede) {
       hospede = await Hospede.create({
@@ -70,11 +65,9 @@ router.post('/nova/:quartoId', requireAuth, async (req, res, next) => {
       });
     }
 
-    // Calcular valor total
     const dias = Math.ceil((new Date(dataCheckOut) - new Date(dataCheckIn)) / (1000 * 60 * 60 * 24));
     const valorTotal = dias * quarto.precoDiaria;
 
-    // Criar reserva
     const reserva = await Reserva.create({
       hospede: hospede._id,
       quarto: quarto._id,
@@ -85,7 +78,6 @@ router.post('/nova/:quartoId', requireAuth, async (req, res, next) => {
       total: valorTotal
     });
 
-    // Criar pagamento
     const pagamento = await Pagamento.create({
       reserva: reserva._id,
       metodo: metodoPagamento,
@@ -93,7 +85,6 @@ router.post('/nova/:quartoId', requireAuth, async (req, res, next) => {
       status: 'Aprovado'
     });
 
-    // Atualizar status do quarto
     quarto.status = 'Ocupado';
     await quarto.save();
 

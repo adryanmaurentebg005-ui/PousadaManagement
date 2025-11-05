@@ -4,7 +4,6 @@ import { Hospede } from '../models/index.js';
 
 const router = express.Router();
 
-// Página de login
 router.get('/login', (req, res) => {
   if (req.session.user) {
     return res.redirect('/');
@@ -16,12 +15,10 @@ router.get('/login', (req, res) => {
   });
 });
 
-// Processar login
 router.post('/login', async (req, res, next) => {
   try {
     const { email, senha } = req.body;
 
-    // If mongoose is connected, use MongoDB; otherwise fall back to in-memory DB
     if (mongoose.connection.readyState === 1) {
       const user = await Hospede.findOne({ email, senha }).lean();
       if (user) {
@@ -40,7 +37,6 @@ router.post('/login', async (req, res, next) => {
   }
 });
 
-// Página de cadastro
 router.get('/cadastro', (req, res) => {
   if (req.session.user) {
     return res.redirect('/');
@@ -53,12 +49,10 @@ router.get('/cadastro', (req, res) => {
   });
 });
 
-// Processar cadastro
 router.post('/cadastro', async (req, res, next) => {
   try {
     const { nome, email, senha, confirmarSenha } = req.body;
 
-    // Validações
     if (senha !== confirmarSenha) {
       return res.render('auth/cadastro', {
         title: 'Cadastro',
@@ -77,7 +71,6 @@ router.post('/cadastro', async (req, res, next) => {
       });
     }
 
-    // Verificar se email já existe
     const exists = await Hospede.findOne({ email }).lean();
     if (exists) {
       return res.render('auth/cadastro', {
@@ -88,7 +81,6 @@ router.post('/cadastro', async (req, res, next) => {
       });
     }
 
-    // Criar novo usuário
     await Hospede.create({ 
       nome, 
       email, 
@@ -108,7 +100,6 @@ router.post('/cadastro', async (req, res, next) => {
   }
 });
 
-// Logout
 router.get('/logout', (req, res) => {
   req.session.destroy();
   res.redirect('/');
