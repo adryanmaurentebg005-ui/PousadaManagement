@@ -70,12 +70,12 @@ router.get('/configuracoes', requireAuth, (req, res) => {
 });
 
 router.post('/atualizar', requireAuth, async (req, res) => {
-  const { nome, telefone, endereco, dataNascimento } = req.body;
+  const { nome, telefone, endereco, dataNascimento, CPF } = req.body;
   const user = req.session.user;
 
   try {
     await Hospede.updateOne({ email: user.email }, {
-      nome, telefone, endereco, dataNascimento
+      nome, telefone, endereco, dataNascimento, CPF
     });
 
     req.session.user.nome = nome;
@@ -127,5 +127,31 @@ router.post('/mudar-senha', requireAuth, (req, res) => {
     success: 'Senha alterada com sucesso!'
   });
 });
+
+
+router.post('/:id/cancelar-reserva', async (req, res, next) => {
+  try {
+    const reserva = await Reserva.findById(req.params.id);
+    if (reserva) await Quarto.findByIdAndUpdate(reserva.quarto, { status: 'Disponível' });
+    
+    const quarto = await Quarto.findById(reserva.quarto).lean();
+    const hospede = await Hospede.findById(reserva.hospede).lean();
+    const pagamento = await Pagamento.findOne({ reserva: reserva._id }).lean();
+await Reserva.findByIdAndDelete(req.params.id);
+   
+res.render('perfil/cancelado', {
+      title: 'Reserva Confirmada',
+      page: 'reservas',
+      reserva: reserva.toObject(),
+      quarto,
+      hospede,
+      pagamento
+    });
+
+  } catch (err) {
+    next(err);
+  }
+});
+
 
 export default router;

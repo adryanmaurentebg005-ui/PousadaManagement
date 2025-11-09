@@ -31,7 +31,6 @@
     <% } %>
     
     <div class="perfil-grid">
-      <!-- Informações do Usuário -->
       <div class="perfil-card">
         <div class="card-header-perfil">
           <h2><i class="fas fa-user-circle"></i> Informações Pessoais</h2>
@@ -85,7 +84,6 @@
         </div>
       </div>
       
-      <!-- Minhas Reservas -->
       <div class="reservas-section">
         <h2><i class="fas fa-calendar-check"></i> Minhas Reservas</h2>
         
@@ -158,7 +156,7 @@
                 
                 <% if (reserva.status === 'Confirmada' || reserva.status === 'Pendente') { %>
                   <div class="reserva-acoes">
-                    <form action="/perfil/cancelar-reserva/<%= reserva.id %>" method="POST" onsubmit="return confirm('Tem certeza que deseja cancelar esta reserva?')">
+                    <form action="/perfil/<%= reserva._id %>/cancelar-reserva" method="POST" onsubmit="return confirm('Tem certeza que deseja cancelar esta reserva?')">
                       <button type="submit" class="btn-cancel">
                         <i class="fas fa-times-circle"></i> Cancelar Reserva
                       </button>
@@ -196,6 +194,11 @@
         <label for="endereco">Endereço</label>
         <input type="text" id="endereco" name="endereco" value="<%= hospede ? hospede.endereco : '' %>">
       </div>
+
+      <div class="form-group">
+          <label for="CPF">CPF</label>
+          <input type="text" id="CPF" name="CPF" required  oninput="formatarCPF(this)">
+      </div>
       
       <div class="form-group">
         <label for="dataNascimento">Data de Nascimento</label>
@@ -225,6 +228,21 @@
       fecharModalPerfil();
     }
   }
+
+  function formatarCPF(campo) {
+  let cpf = campo.value.replace(/\D/g, ""); // remove tudo que não for número
+
+  if (cpf.length > 11) cpf = cpf.slice(0, 11); // limita a 11 dígitos
+
+  cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+  cpf = cpf.replace(/(\d{3})(\d)/, "$1.$2");
+  cpf = cpf.replace(/(\d{3})(\d{1,2})$/, "$1-$2");
+
+  campo.value = cpf;
+}
+
+
+
 </script>
 
 <%- include('../partials/footer') %>

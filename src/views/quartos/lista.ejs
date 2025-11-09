@@ -10,6 +10,18 @@
       <a href="/quartos?tipo=Duplo" class="btn-filter <%= filtroAtual === 'Duplo' ? 'active' : '' %>">Duplo</a>
       <a href="/quartos?tipo=Luxo" class="btn-filter <%= filtroAtual === 'Luxo' ? 'active' : '' %>">Luxo</a>
       <a href="/quartos?tipo=Suíte" class="btn-filter <%= filtroAtual === 'Suíte' ? 'active' : '' %>">Suíte</a>
+
+       <form action="/quartos" method="GET" class="pesquisa-form">
+    <input 
+      type="text" 
+      name="search" 
+      placeholder="Pesquisar quarto..."
+      value="<%= typeof search !== 'undefined' ? search : '' %>"
+      class="input-search"
+    >
+    <button type="submit" class="btn-primary">Buscar</button>
+  </form>
+
     </div>
     
     <div class="quartos-grid">

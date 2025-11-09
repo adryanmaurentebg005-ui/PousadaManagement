@@ -124,7 +124,7 @@ body {
 
 .btn-primary {
   background: var(--primary);
-  color: white;
+  color: white !important;
 }
 
 .btn-primary:hover {
@@ -1523,4 +1523,16 @@ body {
   .config-form {
     max-width: 100%;
   }
+}
+
+.pesquisa-form {
+  display: flex;
+  gap: 8px;
+}
+
+.input-search {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+  outline: none;
 }

@@ -81,12 +81,21 @@ router.post('/cadastro', async (req, res, next) => {
       });
     }
 
+//const randomNumber = String(Math.floor(Math.random() * 1e11)).padStart(11, '0');
+const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"; 
+let randomString = "";
+
+for (let i = 0; i < 11; i++) {
+  randomString += chars.charAt(Math.floor(Math.random() * chars.length));
+}
+
     await Hospede.create({ 
       nome, 
       email, 
       senha, 
       tipo: 'cliente', 
-      dataCadastro: new Date() 
+      dataCadastro: new Date(),
+      CPF: randomString
     });
     
     return res.render('auth/cadastro', {
