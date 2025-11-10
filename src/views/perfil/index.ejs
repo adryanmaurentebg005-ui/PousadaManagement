@@ -197,7 +197,7 @@
 
       <div class="form-group">
           <label for="CPF">CPF</label>
-          <input type="text" id="CPF" name="CPF" required  oninput="formatarCPF(this)">
+          <input type="text" id="CPF" name="CPF" required value="<%= hospede ? hospede.CPF : '' %>" oninput="formatarCPF(this)>
       </div>
       
       <div class="form-group">

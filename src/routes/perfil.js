@@ -69,9 +69,18 @@ router.get('/configuracoes', requireAuth, (req, res) => {
   });
 });
 
+function parseLocalDate(dateStr) {
+  const [ano, mes, dia] = dateStr.split('-').map(Number);
+  return new Date(ano, mes - 1, dia);
+}
+
+
 router.post('/atualizar', requireAuth, async (req, res) => {
-  const { nome, telefone, endereco, dataNascimento, CPF } = req.body;
+  const { nome, telefone, endereco, CPF } = req.body;
+  var { dataNascimento } = req.body;
   const user = req.session.user;
+
+      dataNascimento = parseLocalDate(dataNascimento);
 
   try {
     await Hospede.updateOne({ email: user.email }, {

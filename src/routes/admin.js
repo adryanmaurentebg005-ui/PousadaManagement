@@ -59,25 +59,50 @@ router.get('/hospedes', requireAdmin, async (req, res, next) => {
   }
 });
    
-
+ 
 router.post('/hospedes', requireAdmin, async (req, res, next) => {
   try {
-    const { nome, CPF, telefone, email, endereco, dataNascimento, senha } = req.body;
-    await Hospede.create({ nome, CPF, telefone, email, endereco, dataNascimento, dataCadastro: new Date(), senha, tipo: 'cliente' });
+    const { nome, CPF, telefone, email, endereco, senha } = req.body;
+    let { dataNascimento } = req.body;
+
+    dataNascimento = parseLocalDate(dataNascimento);
+
+    await Hospede.create({
+      nome,
+      CPF,
+      telefone,
+      email,
+      endereco,
+      dataNascimento,
+      dataCadastro: new Date(),
+      senha,
+      tipo: 'cliente'
+    });
+
+    res.redirect('/admin/hospedes');
+  } catch (err) {
+    next(err);
+  }
+});
+function parseLocalDate(dateStr) {
+  const [ano, mes, dia] = dateStr.split('-').map(Number);
+  return new Date(ano, mes - 1, dia);
+}
+router.post('/hospedes/:id/editar', requireAdmin, async (req, res, next) => {
+  try {
+    const dados = { ...req.body };
+
+    if (dados.dataNascimento) {
+      dados.dataNascimento = parseLocalDate(dados.dataNascimento);
+    }
+
+    await Hospede.findByIdAndUpdate(req.params.id, dados);
     res.redirect('/admin/hospedes');
   } catch (err) {
     next(err);
   }
 });
 
-router.post('/hospedes/:id/editar', requireAdmin, async (req, res, next) => {
-  try {
-    await Hospede.findByIdAndUpdate(req.params.id, req.body);
-    res.redirect('/admin/hospedes');
-  } catch (err) {
-    next(err);
-  }
-});
 
 router.post('/hospedes/:id/deletar', requireAdmin, async (req, res, next) => {
   try {

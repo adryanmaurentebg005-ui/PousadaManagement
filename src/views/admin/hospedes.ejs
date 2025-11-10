@@ -17,6 +17,7 @@
           <tr>
             <th>Nome</th>
             <th>CPF</th>
+            <th>Data de Nascimento</th>
             <th>Email</th>
             <th>Telefone</th>
             <th>Senha</th>
@@ -24,7 +25,10 @@
             <th>Ações</th>
           </tr>
         </thead>
-        <tbody>
+
+        
+
+        <tbody> 
           <% if (hospedes.length === 0) { %>
             <tr>
               <td colspan="6" class="text-center">Nenhum hóspede cadastrado</td>
@@ -34,6 +38,7 @@
               <tr>
                 <td><%= hospede.nome %></td>
                 <td><%= hospede.CPF %></td>
+<td><%= new Date(hospede.dataNascimento).toLocaleDateString('pt-BR') %></td>
                 <td><%= hospede.email %></td>
                 <td><%= hospede.telefone %></td>
                 <td><%= hospede.senha %></td>
@@ -113,6 +118,8 @@
 </div>
 
 <script>
+
+
   const hospedes = <%- JSON.stringify(hospedes) %>;
   
   function abrirModal() {
@@ -135,10 +142,10 @@
     document.getElementById('telefone').value = hospede.telefone;
     document.getElementById('email').value = hospede.email;
     document.getElementById('endereco').value = hospede.endereco;
-    document.getElementById('dataNascimento').value = hospede.dataNascimento;
+    document.getElementById('dataNascimento').value = new Date(hospede.dataNascimento).toISOString().split('T')[0];
     document.getElementById('senha').value = hospede.senha;
   }
-  
+   
   function fecharModal() {
     document.getElementById('modalHospede').style.display = 'none';
   }

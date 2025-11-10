@@ -13,4 +13,4 @@ const Pagamento = conexao.models && conexao.models.Pagamento
   ? conexao.models.Pagamento
   : conexao.model('Pagamento', pagamentoSchema);
 
-export default Pagamento;
+export default Pagamento; 
